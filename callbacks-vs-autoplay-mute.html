@@ -20,15 +20,21 @@
   }
 
   function playVideo(video){
-    var promise = video.play();
+    let promise = video.play();
+    let status = document.querySelector('#status-message');
 
     if (promise !== undefined) {
       promise.then(_ => {
-        console.log("Autoplay worked, nice job");
+        status.innerHTML += "autoplay worked, nice job.";
       }).catch(error => {
-        console.log("Autoplay was blocked, let's try while muted...");
+        status.innerHTML += "autoplay was blocked, let's mute and try again... ";
         video.muted = true;
-        video.play();
+        let promise2 = video.play();
+        promise2.then(_ => {
+          status.innerHTML += "OK! Worked while muted.";
+        }).catch(error => {
+          status.innerHTML += "error, even muted it wouldn't play.";
+        });
       });
     }
   }
@@ -55,11 +61,15 @@
     #video-player {
       width: 640px;
     }
+    #status-message {
+      padding-bottom: 1em;
+    }
   </style>
 </head>
 <body>
 
   <h1>Cloudflare player test</h1>
+  <div id="status-message">Loading... </div>
   <div id="video-player"></div>
 
 </body>
