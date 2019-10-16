@@ -1,0 +1,67 @@
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Cloudflare player javascript test</title>
+
+  <script type="text/javascript">
+  function loadVideo(){
+    const videoId = "5d5bc37ffcf54c9b82e996823bffbb81";
+    let player = document.getElementById('video-player');
+    player.innerHTML = `<stream src="${videoId}" controls="" preload=""></stream>`;
+
+    let script = document.createElement('script');
+    // script.data_cfasync = false;
+    script.defer = true;
+    script.type = "text/javascript";
+    script.src = "https://embed.cloudflarestream.com/embed/r4xu.fla9.latest.js?video=" + videoId;
+    player.appendChild(script);
+
+    return player;
+  }
+
+  function playVideo(video){
+    var promise = video.play();
+
+    if (promise !== undefined) {
+      promise.then(_ => {
+        console.log("Autoplay worked, nice job");
+      }).catch(error => {
+        console.log("Autoplay was blocked, let's try while muted...");
+        video.muted = true;
+        video.play();
+      });
+    }
+  }
+
+  document.addEventListener("DOMContentLoaded", function(){
+    let player = loadVideo();
+
+    // TODO how do we trigger a callback from the Cloudflare player
+    // so we can call player.play() with our mute vs. unmuted logic?
+
+    // In the meantime, just wait a second and it should be loaded...
+    setTimeout(function(){
+      let video = player.querySelector('video');
+      playVideo(video)
+    }, 1000);
+
+  });
+  </script>
+
+  <style>
+    body {
+      font-family: sans-serif;
+    }
+    #video-player {
+      width: 640px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Cloudflare player test</h1>
+  <div id="video-player"></div>
+
+</body>
+</html>
+
