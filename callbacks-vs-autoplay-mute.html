@@ -46,10 +46,42 @@
     // so we can call player.play() with our mute vs. unmuted logic?
 
     // In the meantime, just wait a second and it should be loaded...
-    setTimeout(function(){
-      let video = player.querySelector('video');
-      playVideo(video)
-    }, 1000);
+    // setTimeout(function(){
+    //   let video = player.querySelector('video');
+    //   playVideo(video)
+    // }, 1000);
+
+
+    // Hey Jamie! - You can listen to the "durationchange" event
+    // from us which we fire when we learn about the duration of
+    // the video for the first time.
+    //
+    // I've tried this on FF and Safari both on autoplay allowed
+    // and autoplay banned modes. Chrome approaches this in a
+    // bit more smart way with the Media Engagement Index at
+    // chrome://media-engagement.
+    //
+    // Using durationchange like this is undocumented and a mini hack.
+    // We could fire off another event faster than this one or consider
+    // consider your proposed behavior as default behavior for autoplay.
+    // We have decided to leave the autoplay decisions to the
+    // user agent and keep our player api consistent with the HTML5
+    // <video> element for now.
+    // You can find the documented events and attributes here:
+    // https://developers.cloudflare.com/stream/video-playback/player-api/#events
+    //
+    // Congrats on your public launch!
+    // - Renan
+    let stream = document.getElementsByTagName("stream")[0];
+
+    let eventFired = false
+    stream.addEventListener("durationchange", function(){
+        if (eventFired) { return }
+        eventFired = true
+
+        let video = player.querySelector('video');
+        playVideo(video);
+    });
 
   });
   </script>
